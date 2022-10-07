@@ -59,10 +59,8 @@ class InnerInfiniteScrollTabView extends StatefulWidget {
 @visibleForTesting
 class InnerInfiniteScrollTabViewState extends State<InnerInfiniteScrollTabView>
     with SingleTickerProviderStateMixin {
-  late final _tabController = CycledScrollController(
-    initialScrollOffset: centeringOffset(0),
-  );
-  late final _pageController = CycledScrollController();
+  late final CycledScrollController _tabController;
+  late final CycledScrollController _pageController;
 
   final ValueNotifier<bool> _isContentChangingByTab = ValueNotifier(false);
   bool _isTabForceScrolling = false;
@@ -94,7 +92,7 @@ class InnerInfiniteScrollTabViewState extends State<InnerInfiniteScrollTabView>
   double get indicatorHeight =>
       widget.indicatorHeight ?? widget.separator?.width ?? 2.0;
 
-  late final _indicatorAnimationController;
+  late final AnimationController _indicatorAnimationController;
   Animation<double>? _indicatorAnimation;
 
   double _totalTabSizeCache = 0.0;
@@ -199,6 +197,9 @@ class InnerInfiniteScrollTabViewState extends State<InnerInfiniteScrollTabView>
 
     _indicatorSize = ValueNotifier(_tabTextSizes[0]);
 
+    _tabController = CycledScrollController(
+      initialScrollOffset: centeringOffset(0),
+    );
     _tabController.addListener(() {
       if (_isTabForceScrolling) return;
 
@@ -207,6 +208,7 @@ class InnerInfiniteScrollTabViewState extends State<InnerInfiniteScrollTabView>
       }
     });
 
+    _pageController = CycledScrollController();
     _pageController.addListener(() {
       if (_isContentChangingByTab.value) return;
 
